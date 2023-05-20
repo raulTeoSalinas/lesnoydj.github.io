@@ -142,7 +142,20 @@ function calcular() {
                 canonica.innerHTML += ` + ${valuesRest[contadorRest]} X<sub>${j + 2}</sub>`
                 contadorRest++;
             }
-            canonica.innerHTML += `= ${valuesResu[contadorRes]} <br>`
+
+            switch (valuesMenMay[i]) {
+                case "menorIgual":
+                    canonica.innerHTML += ` ≥ `
+                    break;
+                case "mayorIgual":
+                    canonica.innerHTML += ` ≤ `
+                    break;
+                case "igual":
+                    canonica.innerHTML += ` = `
+                    break;
+            }
+
+            canonica.innerHTML += `${valuesResu[contadorRes]} <br>`
             contadorRes++;
         }
 
@@ -182,6 +195,7 @@ function calcular() {
 
 
 
+
         //Obtenemos los indices Mayor Igual asi como iguales
         let indicesIgual = [];
         let indicesMayIgual = [];
@@ -191,16 +205,16 @@ function calcular() {
             }
             if (valuesMenMay[i] === "igual") {
                 indicesIgual.push(i);
-                indicesMayIgual.push(valuesResu.length); 
+                indicesMayIgual.push(valuesResu.length);
                 numRest = numRest + 1;
-                let k = (i + 1) * numVaria-numVaria;
+                let k = (i + 1) * numVaria - numVaria;
                 for (let j = 0; j < numVaria; j++) {
                     valuesRest.push(valuesRest[k]);
                     k++;
                 }
                 console.log(valuesRest);
                 valuesResu.push(valuesResu[i])
-                
+
 
             }
         }
@@ -286,9 +300,11 @@ function calcular() {
             matriz[i][columnas - 1] = valuesResu[i - 1]
         }
 
+        console.log(indicesMayIgual);
+        console.log(valuesMenMay);
 
         //CONVERSION DE MATRIZ A DUAL MATRIZ
-        if (maxOrmin == "max" && indicesMayIgual.length == valuesMenMay.length || maxOrmin == 'min' && indicesMayIgual.length != valuesMenMay.length) {
+        if (maxOrmin == "max" && indicesMayIgual.length == valuesMenMay.length || maxOrmin == 'min') {
             const matrizAuxiliar = new Array(matriz.length);
             for (let i = 0; i < matriz.length; i++) {
                 matrizAuxiliar[i] = new Array(matriz[i].length);
@@ -638,16 +654,30 @@ function calcular() {
             for (let i = 1; i < numRest + 1; i++) {
                 resultadoFinalP.innerHTML += `<br> H<sub>${i}</sub> = ${matriz2[0][numVaria + i]}`
             }
-        } else {
-            let todoSonUno = true;
-            
-            for (let i = 1; i < numRest + 1 -indicesIgual.length; i++) {
+            for (let i = 1; i < numRest + 1 - indicesIgual.length; i++) {
                 resultadoFinalP.innerHTML += `<br> X<sub>${i}</sub> = ${matriz2[i][numRest + numVaria + 1]} `
+
                 if (matriz2[i][numRest + numVaria + 1] != 1) {
                     todoSonUno = false;
                 }
 
             }
+
+        } else {
+            let todoSonUno = true;
+
+            for (let i = 1; i < numRest + 1 - indicesIgual.length; i++) {
+                resultadoFinalP.innerHTML += `<br> X<sub>${i}</sub> = ${matriz2[i][numRest + numVaria + 1]} `
+
+                if (matriz2[i][numRest + numVaria + 1] != 1) {
+                    todoSonUno = false;
+                }
+
+            }
+            for (let i = 1; i < numRest + 1; i++) {
+                resultadoFinalP.innerHTML += `<br> H<sub>${i}</sub> = ${matriz2[0][numVaria + i]}`
+            }
+
             if (todoSonUno) {
                 resultadoFinalP.innerHTML += `<br> No hay una solución óptima`
             }
@@ -694,66 +724,6 @@ function calcular() {
 }
 
 
-
-
-
-//Agrega elementos html para las restricciones
-// function agregarRestriccion() {
-//     var rest = document.querySelector(".rest")
-
-//     let contenedor = document.createElement("div")
-//     contenedor.classList.add("d-flex", "justify-content-center", "align-items-center", "restriccion")
-
-//     let fInput = document.createElement("input");
-//     fInput.type = "number";
-//     contenedor.appendChild(fInput);
-
-//     let x1 = document.createElement("p");
-//     x1.innerText = "x";
-
-
-//     let uno = document.createElement("sub");
-//     uno.innerText = "1";
-//     x1.appendChild(uno);
-
-//     contenedor.appendChild(x1);
-
-//     let mas = document.createElement("p");
-//     mas.innerText = "+";
-//     mas.classList.add("signos")
-//     contenedor.appendChild(mas);
-
-
-//     let sInput = document.createElement("input");
-//     sInput.type = "number";
-//     contenedor.appendChild(sInput);
-
-//     let x2 = document.createElement("p");
-//     x2.innerText = "x";
-//     let dos = document.createElement("sub");
-//     dos.innerText = "2";
-//     x2.appendChild(dos);
-//     contenedor.appendChild(x2);
-
-//     let menorIgual = document.createElement("p");
-//     menorIgual.innerText = "  ≤";
-//     menorIgual.classList.add("signos")
-//     contenedor.appendChild(menorIgual);
-
-//     let tInput = document.createElement("input");
-//     tInput.type = "number";
-//     contenedor.appendChild(tInput);
-
-//     let borrar = document.createElement("i");
-//     borrar.classList.add("fa-solid", "fa-trash");
-//     borrar.title = "Borrar restricción";
-//     borrar.onclick = eliminarRestriccion;
-//     contenedor.appendChild(borrar);
-
-//     rest.appendChild(contenedor);
-
-
-// }
 
 //Elimina elementos html de las restricciones
 function eliminarRestriccion(event) {
@@ -819,7 +789,7 @@ function editar() {
 
     </div>
     <div class="d-flex flex-row justify-content-center botones align-items-center">
-        <button class="calcular" title="Calcular por método simplex" onclick="calcular()">Calcular</button>
+        <button class="calcular" title="Calcular por Método Simplex" onclick="calcular()">Calcular</button>
     </div>`
 
     mainContent.innerHTML = html;
