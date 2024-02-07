@@ -1,4 +1,5 @@
 [ENGLISH]
+
 A beautiful story about this Simplex Method calculator...
 It all started as a joke from our math teacher, but boy did I take it seriously! "Whoever makes a calculator for the Simplex Method can stop coming
 to class and will get an A for the semester," he said.
